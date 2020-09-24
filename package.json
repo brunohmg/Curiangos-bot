@@ -1,16 +1,29 @@
 {
   "name": "botdisc",
   "version": "1.0.0",
-  "description": "",
   "main": "bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node . -W"
+    "start": "nodemon bot.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^12.3.1"
-  }
+    "discord": "^0.8.2",
+    "discord.js": "^12.3.1",
+    "nodemon": "^2.0.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brunohmg/Curiangos-bot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/brunohmg/Curiangos-bot/issues"
+  },
+  "homepage": "https://github.com/brunohmg/Curiangos-bot#readme",
+  "devDependencies": {
+    "nodemon": "2.0.4"
+  },
+  "description": ""
 }
