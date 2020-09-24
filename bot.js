@@ -85,3 +85,16 @@ client.on('messageReactionRemove', async (reaction, user) => {
         }
     }
 })
+
+
+client.on('message', message => {
+    if(message.author.id === '209447242740793344' 
+    || message.author.id === '160348475589001216' 
+    || message.author.id === '207612904357363712')
+    {
+        if(message.content.toLowerCase() === `${prefix}destroy`) {
+            client.destroy();
+            console.log('Bot is dead');
+        }
+    }
+})
