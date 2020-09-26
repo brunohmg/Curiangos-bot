@@ -1,15 +1,18 @@
-const { Client } = require('discord.js');
-const client = new Client();
-const { token } = require('./config.json')
+const Discord = require('discord.js');
+const client = new Discord.Client();
+const { token } = require('./config.json');
 const clearMessages = require('./commands/WipeMessages.js');
-const { roleManage, roleSet, roleRemove } = require('./commands/RoleManage')
-const destroyBot = require('./commands/Destroy')
+const { roleManage, roleSet, roleRemove } = require('./commands/RoleManage');
+const destroyBot = require('./commands/Destroy');
+const musicPlay  = require('./src/MusicBot');
+
 
 client.login(token);
 
 client.on('ready', () => {
     console.log('Bot started');
 })
+
 //!roles command
 client.on('message', message => {
     roleManage(message);
@@ -28,5 +31,10 @@ client.on('message', message => {
 
 //!clear command
 client.on('message', message => {
-    clearMessages(message);
+     clearMessages(message);
+})
+
+//MusicBot
+client.on('message', message => {
+    musicPlay(message);
 })
