@@ -1,3 +1,4 @@
+const { MessageEmbed } = require('discord.js')
 const { prefix } = require ('../config.json');
 const ytdl = require('ytdl-core');
 const queue = new Map();
@@ -22,9 +23,16 @@ function musicPlay(msg) {
     {
         skipMusic(msg, serverQueue);
         return;
+
+    } else if(msg.content.startsWith(`${prefix}queue`))
+    {   
+        queueSongs(msg, serverQueue);
+        return;
     } else {
         return;
     }
+
+
 
     async function execute(msg, serverQueue) {
         const args = msg.content.split(' ');
@@ -65,7 +73,7 @@ function musicPlay(msg) {
                 queueConstruct.connection = connection;
                 play(msg.guild, queueConstruct.songs[0]);
             } catch (err) {
-                console.log(err);
+                //console.log(err);
                 queue.delete(msg.guild.id);
                 return msg.channel.send(err);
             }
@@ -99,11 +107,9 @@ function musicPlay(msg) {
             serverQueue.textChannel.send(`Start playing **${song.title}**`);
         }
     }
-
 }
 
 function skipMusic(msg, serverQueue){
-
     if (!msg.member.voice.channel)
         return msg.channel.send(
             "You must be in a voice channel to skip the music!"
@@ -114,7 +120,6 @@ function skipMusic(msg, serverQueue){
             return msg.channel.send("There's no more music on the queue!");
 
     } catch(err) {
-        //console.log(err)
         return msg.channel.send('Queue is empty!')
     }
     serverQueue.connection.dispatcher.end()
@@ -130,5 +135,35 @@ function stopMusic(msg, serverQueue){
     serverQueue.songs = [];
     serverQueue.connection.dispatcher.end();
 } 
+
+async function queueSongs(msg, serverQueue) {
+    try{
+        if(serverQueue.songs.length === 0)
+            return;
+    } catch(err){
+        return msg.channel.send(
+            "There's no music on queue!"
+        );
+    }
+    
+    let inQueue = [];
+    let count = 1;
+    
+    for(let value of serverQueue.songs) {
+        const { title } = value;
+        inQueue.push(`${count} - ` + title);
+        count++;
+    }
+    
+    if(inQueue.length > 0)
+    {
+        const embed = new MessageEmbed();
+        embed.setTitle('Musics in queue');
+        embed.setColor('#663399');
+        embed.setDescription(inQueue.join('\n'));
+        msg.channel.send(embed);
+    }
+    
+}
 
 module.exports = musicPlay;
