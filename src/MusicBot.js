@@ -96,7 +96,7 @@ function musicPlay(msg) {
             const dispatcher = serverQueue.connection
                 .play(ytdl(song.url, {
                     quality: 'highestaudio',
-                    highWaterMark: 1 << 25
+                    filter: 'audio'
                 }))
                 .on('finish', () => {
                     serverQueue.songs.shift();
