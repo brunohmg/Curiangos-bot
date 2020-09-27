@@ -12,13 +12,15 @@ function musicPlay(msg) {
     {
         execute(msg, serverQueue);
         return;
+
     } else if(msg.content.startsWith(`${prefix}stop`))
     {
-        pause(msg, serverQueue);
+        stopMusic(msg, serverQueue);
         return;
+
     } else if(msg.content.startsWith(`${prefix}skip`))
     {
-        skip(msg, serverQueue);
+        skipMusic(msg, serverQueue);
         return;
     } else {
         return;
@@ -50,7 +52,7 @@ function musicPlay(msg) {
                 voiceChannel: voiceChannel,
                 connection: null,
                 songs: [],
-                volume: 5,
+                volume: 1,
                 playing: true
             };
     
@@ -84,7 +86,10 @@ function musicPlay(msg) {
             }
         
             const dispatcher = serverQueue.connection
-                .play(ytdl(song.url))
+                .play(ytdl(song.url, {
+                    quality: 'highestaudio',
+                    highWaterMark: 1 << 25
+                }))
                 .on('finish', () => {
                     serverQueue.songs.shift();
                     play(guild, serverQueue.songs[0]);
@@ -96,5 +101,34 @@ function musicPlay(msg) {
     }
 
 }
+
+function skipMusic(msg, serverQueue){
+
+    if (!msg.member.voice.channel)
+        return msg.channel.send(
+            "You must be in a voice channel to skip the music!"
+        ); 
+        
+    try {
+        if (serverQueue.songs.length === 1) 
+            return msg.channel.send("There's no more music on the queue!");
+
+    } catch(err) {
+        //console.log(err)
+        return msg.channel.send('Queue is empty!')
+    }
+    serverQueue.connection.dispatcher.end()
+}
+
+function stopMusic(msg, serverQueue){
+    
+    if(!msg.member.voice.channel)
+            return msg.channel.send(
+                "You must be in a voice channel to stop the music!"
+            );
+
+    serverQueue.songs = [];
+    serverQueue.connection.dispatcher.end();
+} 
 
 module.exports = musicPlay;

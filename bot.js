@@ -1,19 +1,26 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const { token } = require('./config.json');
+const { token, prefix } = require('./config.json');
 const clearMessages = require('./commands/WipeMessages.js');
 const { roleManage, roleSet, roleRemove } = require('./commands/RoleManage');
 const destroyBot = require('./commands/Destroy');
-const musicPlay  = require('./src/MusicBot');
+const  musicPlay = require('./src/MusicBot');
 
 
+//------------// Bot Startup //------------
 client.login(token);
 
 client.on('ready', () => {
     console.log('Bot started');
 })
+client.on('reconnecting', () => {
+    console.log('Reconnecting...');
+})
+client.on('disconnect', () => {
+    console.log('Bot disconnected!');
+})
 
-//!roles command
+//-----------// !roles command by reactions //-----------
 client.on('message', message => {
     roleManage(message);
 })
@@ -24,17 +31,19 @@ client.on('messageReactionRemove', async (reaction, user) => {
     roleRemove(reaction, user);
 })
 
-//!destroy command
-client.on('message', message => {
-    destroyBot(message);
+//------------// !destroy command //-------------
+client.on('message', (message) => {
+    destroyBot(message)
 })
 
-//!clear command
+//----------// !clear command //-----------
 client.on('message', message => {
      clearMessages(message);
 })
 
-//MusicBot
+
+
+//----------// MusicBot //-----------
 client.on('message', message => {
     musicPlay(message);
 })

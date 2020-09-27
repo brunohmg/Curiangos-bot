@@ -3,9 +3,7 @@ const client = new Client();
 const { prefix } = require('../config.json');
 
 const destroyCommand = (msg) => {
-    if(msg.author.id === '209447242740793344' 
-    || msg.author.id === '160348475589001216' 
-    || msg.author.id === '207612904357363712')
+    if(msg.channel.id === '345488749523632128')
     {
         if(msg.content.toLowerCase() === `${prefix}destroy`) 
         {
