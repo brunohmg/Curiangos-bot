@@ -39,12 +39,12 @@ function musicPlay(msg) {
         const voiceChannel = msg.member.voice.channel;
     
         if(!voiceChannel) 
-            return msg.channel.send('Você estar dentro de um canal de voz');
+            return msg.channel.send('You must be in a voice channel to call me.');
     
         const permissions = voiceChannel.permissionsFor(msg.client.user);
         if(!permissions.has('CONNECT') || !permissions.has('SPEAK'))
             return msg.channel.send(
-                'You need permission to join and speak in your voice channel'
+                'I need permissions to join and speak in your voice channel'
             );
     
         const songInfo = await ytdl.getInfo(args[1]);
@@ -80,7 +80,7 @@ function musicPlay(msg) {
             
         } else {
             serverQueue.songs.push(song);
-            return msg.channel.send(`${song.title} foi adicionado na fila!`);
+            return msg.channel.send(`**${song.title} has added to queue!**`);
         }
     
         function play(guild, song) {
@@ -160,7 +160,7 @@ async function queueSongs(msg, serverQueue) {
         const embed = new MessageEmbed();
         embed.setTitle('Musics in queue');
         embed.setColor('#663399');
-        embed.setDescription(inQueue.join('\n'));
+        embed.setDescription(`**${inQueue.join('\n')}**`);
         msg.channel.send(embed);
     }
     

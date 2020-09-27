@@ -1,6 +1,6 @@
 const { Client } = require('discord.js');
 const client = new Client();
-const { prefix } = require('../config.json');
+const { token, prefix } = require('../config.json');
 
 const destroyCommand = (msg) => {
     if(msg.channel.id === '345488749523632128')
@@ -9,7 +9,11 @@ const destroyCommand = (msg) => {
         {
             client.destroy();
             console.log('Bot is dead');
+            return client.login(token) && msg.channel.send("Bot restarted.");
         }
+        
     }
+
+    
 }
 module.exports = destroyCommand;
