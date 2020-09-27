@@ -36,7 +36,7 @@ const roleSet = async (userReact, userId) => {
     const emojiName = userReact.emoji.name;
     const roleUsers = userReact.message.guild.members.cache.get(userId.id);
 
-    if(userReact.message.channel.id === '758458123982864424') {
+    if(userReact.message.channel.id === '682761417077948519') {
         if(emojiName === '🦉') {
             if(!roleUsers.roles.cache.get('209861058226159617')) {
                 await roleUsers.roles.add('209861058226159617')
@@ -64,7 +64,7 @@ const roleRemove = async (userReact, userId) => {
     const emojiName = userReact.emoji.name;
     const roleUsers = userReact.message.guild.members.cache.get(userId.id);
 
-    if(userReact.message.channel.id === '758458123982864424') {
+    if(userReact.message.channel.id === '682761417077948519') {
         if(emojiName === '🦉') {
             await roleUsers.roles.remove('209861058226159617')            
         }
