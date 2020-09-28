@@ -32,8 +32,8 @@ client.on('messageReactionRemove', async (reaction, user) => {
 })
 
 //------------// !destroy command //-------------
-client.on('message', (message) => {
-    destroyBot(message)
+client.on('message', (message, client) => {
+    destroyBot(message, client)
 })
 
 //----------// !clear command //-----------
