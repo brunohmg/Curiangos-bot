@@ -10,26 +10,39 @@ async function musicPlay(msg) {
     if(msg.channel.id !== '758046915311960155') return;
 
     const serverQueue = queue.get(msg.guild.id);
+    const clearMusicChat = (function(){
+        setTimeout(() => {
+            msg.channel.bulkDelete(10)
+        }, 3000)
+    })();
     
     if(!msg.content.startsWith(`${prefix}`)) {
         await urlVideo(msg, serverQueue, msg.content);
+        clearMusicChat;
         return;
     }
 
     if(msg.content.startsWith(`${prefix}skip`))
     {
         skipMusic(msg, serverQueue);
+        clearMusicChat;
         return;
     } else if(msg.content.startsWith(`${prefix}stop`))
     {
         stopMusic(msg, serverQueue);
+        clearMusicChat;
         return;
     } else if(msg.content.startsWith(`${prefix}queue`))
     {
         queueSongs(msg, serverQueue);
+        (function(){
+            setTimeout(() => {
+                msg.channel.bulkDelete(10)
+            }, 10000)
+        })();
         return;
     }
-    
+       
 }
 
 function urlVideo(msg, serverQueue, args) {
@@ -171,6 +184,6 @@ async function queueSongs(msg, serverQueue) {
     
 }
 
+
 module.exports = musicPlay
     
-
