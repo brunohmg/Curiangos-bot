@@ -11,9 +11,10 @@ async function musicPlay(msg) {
 
     const serverQueue = queue.get(msg.guild.id);
     
-    await urlVideo(msg, serverQueue, msg.content);
-
-
+    if(!msg.content.startsWith(`${prefix}`)) {
+        await urlVideo(msg, serverQueue, msg.content);
+        return;
+    }
 
     if(msg.content.startsWith(`${prefix}skip`))
     {
@@ -100,7 +101,8 @@ async function execute(msg, serverQueue, resultUrl) {
             const dispatcher = serverQueue.connection
                 .play(ytdl(song.url, {
                     quality: 'highestaudio',
-                    filter: 'audio'
+                    filter: 'audio',
+                    highWaterMark: 1 << 25
                 }))
                 .on('finish', () => {
                     serverQueue.songs.shift();
