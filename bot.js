@@ -3,7 +3,6 @@ const client = new Discord.Client();
 const { token, prefix } = require('./config.json');
 const clearMessages = require('./commands/WipeMessages.js');
 const { roleManage, roleSet, roleRemove } = require('./commands/RoleManage');
-const destroyBot = require('./commands/Destroy');
 const  musicPlay = require('./src/MusicBot');
 
 
@@ -29,11 +28,6 @@ client.on('messageReactionAdd', async (reaction, user) => {
 })
 client.on('messageReactionRemove', async (reaction, user) => {
     roleRemove(reaction, user);
-})
-
-//------------// !destroy command //-------------
-client.on('message', (message, client) => {
-    destroyBot(message, client)
 })
 
 //----------// !clear command //-----------

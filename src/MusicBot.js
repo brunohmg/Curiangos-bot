@@ -1,59 +1,64 @@
-const { MessageEmbed } = require('discord.js')
+const { Client, MessageEmbed } = require('discord.js')
+const client = new Client();
 const { prefix } = require ('../config.json');
 const ytdl = require('ytdl-core');
 const queue = new Map();
+const search = require('yt-search')
 
-function musicPlay(msg) {
+async function musicPlay(msg) {
     if(msg.author.bot) return;
-    if(!msg.content.startsWith(prefix)) return;
     if(msg.channel.id !== '758046915311960155') return;
 
     const serverQueue = queue.get(msg.guild.id);
-    if(msg.content.startsWith(`${prefix}play`)) 
-    {
-        execute(msg, serverQueue);
-        return;
+    
+    await urlVideo(msg, serverQueue, msg.content);
 
+
+
+    if(msg.content.startsWith(`${prefix}skip`))
+    {
+        skipMusic(msg, serverQueue);
+        return;
     } else if(msg.content.startsWith(`${prefix}stop`))
     {
         stopMusic(msg, serverQueue);
         return;
-
-    } else if(msg.content.startsWith(`${prefix}skip`))
-    {
-        skipMusic(msg, serverQueue);
-        return;
-
     } else if(msg.content.startsWith(`${prefix}queue`))
-    {   
+    {
         queueSongs(msg, serverQueue);
         return;
-    } else {
-        return;
     }
-
-
-
-    async function execute(msg, serverQueue) {
-        const args = msg.content.split(' ');
-        const voiceChannel = msg.member.voice.channel;
     
-        if(!voiceChannel) 
+}
+
+function urlVideo(msg, serverQueue, args) {
+    try {
+        search(args, (err, result) => {
+            execute(msg, serverQueue, result.videos[0].url)
+        })
+    } catch(e) {
+        console.log(e);
+    }
+}
+
+async function execute(msg, serverQueue, resultUrl) {
+    const voiceChannel = msg.member.voice.channel;
+    if(!voiceChannel) 
             return msg.channel.send('You must be in a voice channel to call me.');
     
-        const permissions = voiceChannel.permissionsFor(msg.client.user);
-        if(!permissions.has('CONNECT') || !permissions.has('SPEAK'))
-            return msg.channel.send(
-                'I need permissions to join and speak in your voice channel'
-            );
-    
-        const songInfo = await ytdl.getInfo(args[1]);
-        const song = {
-            title: songInfo.videoDetails.title,
-            url: songInfo.videoDetails.video_url
-        };
-    
-        if(!serverQueue)
+    const permissions = voiceChannel.permissionsFor(msg.client.user);
+    if(!permissions.has('CONNECT') || !permissions.has('SPEAK'))
+        return msg.channel.send(
+            'I need permissions to join and speak in your voice channel'
+        );
+
+    const songInfo = await ytdl.getInfo(resultUrl);
+    const song = {
+        title: songInfo.videoDetails.title,
+        url: songInfo.videoDetails.video_url
+    }
+
+    if(!serverQueue)
         {
             const queueConstruct = {
                 textChannel: msg.channel,
@@ -73,7 +78,6 @@ function musicPlay(msg) {
                 queueConstruct.connection = connection;
                 play(msg.guild, queueConstruct.songs[0]);
             } catch (err) {
-                //console.log(err);
                 queue.delete(msg.guild.id);
                 return msg.channel.send(err);
             }
@@ -82,7 +86,7 @@ function musicPlay(msg) {
             serverQueue.songs.push(song);
             return msg.channel.send(`**${song.title} has added to queue!**`);
         }
-    
+
         function play(guild, song) {
             const serverQueue = queue.get(guild.id);
         
@@ -106,7 +110,6 @@ function musicPlay(msg) {
             dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
             serverQueue.textChannel.send(`Start playing **${song.title}**`);
         }
-    }
 }
 
 function skipMusic(msg, serverQueue){
@@ -166,4 +169,6 @@ async function queueSongs(msg, serverQueue) {
     
 }
 
-module.exports = musicPlay;
+module.exports = musicPlay
+    
+
